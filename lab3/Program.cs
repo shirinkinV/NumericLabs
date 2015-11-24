@@ -12,6 +12,7 @@ namespace lab3
         static void Main(string[] args)
         {
             taskForTeacher();
+            hugeTest();
             Console.Read();
         }
 
@@ -58,15 +59,20 @@ namespace lab3
         {
             double[][] matrix =
             {
-                new double[]{ 10, 4, 2, 5, 2, 4 },
-                new double[]{ 3, 20, 3, 5, 4, 3 },
-                new double[]{ 1, 5, 30, 1, 3, 1 },
-                new double[]{ 4, 5, 2, 20, 4, 3 },
-                new double[]{ 4, 5, 3, 4, 20, 2 },
-                new double[]{ 2, 1, 4, 3, 5, 25 },
+                new double[]{ 100, 4, 2, 5, 2, 4, 5, 1, 5, 7 },
+                new double[]{ 3, 20, 3, 5, 4, 3, 1, 3, 2, 6 },
+                new double[]{ 1, 5, 50, 1, 3, 1, 4, 1, 4, 7 },
+                new double[]{ 4, 5, 2, 50, 4, 3, 6, 2, 7, 2 },
+                new double[]{ 4, 5, 3, 4, 20, 2, 5, 2, 7, 2 },
+                new double[]{ 2, 1, 4, 3, 5, 25, 3, 5, 2, 7 },
+                new double[]{ 1, 1, 3, 3, 6, 2, 30, 1, 3, 2 },
+                new double[]{ 1, 7, 3, 6, 4, 2, 1, 80, 3, 5 },
+                new double[]{ 8, 2, 7, 2, 6, 3, 5, 2, 60, 4 },
+                new double[]{ 1, 4, 2, 6, 1, 6, 5, 6, 2, 100 },
+
             };
 
-            double[] vector = { 10, 2, 3, 6, 7, 4 };
+            double[] vector = { 100000, 0.22, 30000, 6, 70, 4, 400, 8, 1, 23 };
 
             double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix), getVectorForYacobiMethod(matrix, vector), 1e-12);
             for (int i = 0; i < solution.Length; i++)
