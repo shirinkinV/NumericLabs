@@ -9,9 +9,13 @@ namespace lab3
     class Program
     {
 
-        static double epsilon = 0.5e-10;
- 
         static void Main(string[] args)
+        {
+            taskForTeacher();
+            Console.Read();
+        }
+
+        static void taskForTeacher()
         {
             double[][] matrix = {
                 new double[]{ 1.56, -0.14, 1.2 },
@@ -19,21 +23,9 @@ namespace lab3
                 new double[]{ -0.24, -0.26, -0.5 },
             };
 
-            double[][] matrix2 =
-            {
-                new double[]{ 10  , 4  , 2 ,  5 ,  2  , 4  },
-              new double[]{  3  , 20  , 3  , 5  , 4  , 3    },
-                new double[]{ 1  , 5  , 30   ,1  , 3 ,  1   },
-                new double[]{ 4  , 5  , 2  , 20,   4 ,  3    },
-            new double[]{     4 ,  5  , 3  , 4  , 20 ,  2    },
-              new double[]{  2  , 1  , 4  , 3  , 5  , 25    },
-            };
-
             double[] vector = { 4.88, 1.64, -2.26 };
 
-            double[] vector2 = {10, 2, 3, 6, 7, 4 };
-
-            double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix2), getVectorForYacobiMethod(matrix2, vector2));
+            double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix), getVectorForYacobiMethod(matrix, vector), 0.5e-4);
             for (int i = 0; i < solution.Length; i++)
             {
                 Console.Write(solution[i] + " ");
@@ -41,18 +33,72 @@ namespace lab3
             Console.WriteLine();
             Console.WriteLine();
 
-            Func<double[], double[]> mapping = getMappingForJacobiMethod(matrix2, vector2);
+            Func<double[], double[]> mapping = getMappingForJacobiMethod(matrix, vector);
 
-            double[] solution2 = getSolutionWithIterationUsingMapping(mapping, vector2.Length);
+            double[] solution2 = getSolutionWithIterationUsingMapping(mapping, vector.Length, 0.5e-4);
             for (int i = 0; i < solution2.Length; i++)
             {
                 Console.Write(solution2[i] + " ");
             }
             Console.WriteLine();
-            Console.Read();
+            Console.WriteLine();
+
+            Func<double[], double[]> mappingZ = getMappingForZeidelMethod(matrix, vector);
+
+            double[] solution3 = getSolutionWithIterationUsingMapping(mappingZ, vector.Length, 0.5e-4);
+            for (int i = 0; i < solution3.Length; i++)
+            {
+                Console.Write(solution3[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
         }
 
-        static double[] getSolutionWithIterationUsingMapping(Func<double[], double[]> mapping, int count)
+        static void hugeTest()
+        {
+            double[][] matrix =
+            {
+                new double[]{ 10, 4, 2, 5, 2, 4 },
+                new double[]{ 3, 20, 3, 5, 4, 3 },
+                new double[]{ 1, 5, 30, 1, 3, 1 },
+                new double[]{ 4, 5, 2, 20, 4, 3 },
+                new double[]{ 4, 5, 3, 4, 20, 2 },
+                new double[]{ 2, 1, 4, 3, 5, 25 },
+            };
+
+            double[] vector = { 10, 2, 3, 6, 7, 4 };
+
+            double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix), getVectorForYacobiMethod(matrix, vector), 1e-12);
+            for (int i = 0; i < solution.Length; i++)
+            {
+                Console.Write(solution[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+            Func<double[], double[]> mapping = getMappingForJacobiMethod(matrix, vector);
+
+            double[] solution2 = getSolutionWithIterationUsingMapping(mapping, vector.Length, 1e-12);
+            for (int i = 0; i < solution2.Length; i++)
+            {
+                Console.Write(solution2[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+            Func<double[], double[]> mappingZ = getMappingForZeidelMethod(matrix, vector);
+
+            double[] solution3 = getSolutionWithIterationUsingMapping(mappingZ, vector.Length, 1e-12);
+            for (int i = 0; i < solution3.Length; i++)
+            {
+                Console.Write(solution3[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+        }
+
+        static double[] getSolutionWithIterationUsingMapping(Func<double[], double[]> mapping, int count, double epsilon)
         {
             double[] x_k = new double[count];
             double[] x_k1 = mapping(x_k);
@@ -81,7 +127,7 @@ namespace lab3
             return x_k1;
         }
 
-        static double[] getSolutionWithIteration(double[][] iterationMatrix, double[] iterationVector)
+        static double[] getSolutionWithIteration(double[][] iterationMatrix, double[] iterationVector, double epsilon)
         {
             double[] x_k = new double[iterationVector.Length];
 
@@ -144,6 +190,7 @@ namespace lab3
                     {
                         result[i][j] = -srcMatrix[i][j] / srcMatrix[i][i];
                     }
+
                 }
             }
             return result;
@@ -172,9 +219,32 @@ namespace lab3
             };
         }
 
-        static Func<double[], double[]> getMappingForZeidelMethod()
+        static Func<double[], double[]> getMappingForZeidelMethod(double[][] srcMatrix, double[] srcVector)
         {
-            return null;
+            return x =>
+            {
+                double[] result = new double[srcVector.Length];
+                //новый вектор получаем по формуле x_i^(k+1)=(b_i-a_i1*x_1^(k+1)-a_i2*x_2^(k+1)-...-a_i(i-1)*x_(i-1)^(k+1)-a_i(i+1)*x_(i+1)^(k)-...)/a_ii 
+                for (int i = 0; i < srcVector.Length; i++)
+                {
+                    for (int j = 0; j < srcVector.Length; j++)
+                    {
+                        if (j < i)
+                        {
+                            result[i] -= srcMatrix[i][j] * result[j];
+                        }
+                        //здесь различие
+                        if (j > i)
+                        {
+                            result[i] -= srcMatrix[i][j] * x[j];
+                        }
+                    }
+                    result[i] += srcVector[i];
+                    result[i] /= srcMatrix[i][i];
+                }
+
+                return result;
+            };
         }
 
         static double[] getVectorForYacobiMethod(double[][] srcMatrix, double[] srcVector)
