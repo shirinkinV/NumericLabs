@@ -104,35 +104,6 @@ namespace lab3
 
         }
 
-        static double[] getSolutionWithIterationUsingMapping(Func<double[], double[]> mapping, int count, double epsilon)
-        {
-            double[] x_k = new double[count];
-            double[] x_k1 = mapping(x_k);
-
-            for (int i = 0; i < x_k1.Length; i++)
-            {
-                Console.Write(x_k1[i] + " ");
-            }
-            Console.WriteLine();
-
-            int n = 1;
-
-            while (distance(x_k, x_k1) > epsilon)
-            {
-                n++;
-                x_k = x_k1;
-                x_k1 = mapping(x_k);
-                for (int i = 0; i < x_k1.Length; i++)
-                {
-                    Console.Write(x_k1[i] + " ");
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine("iterations " + n);
-
-            return x_k1;
-        }
-
         static double[] getSolutionWithIteration(double[][] iterationMatrix, double[] iterationVector, double epsilon)
         {
             double[] x_k = new double[iterationVector.Length];
@@ -161,29 +132,6 @@ namespace lab3
             return x_k1;
         }
 
-        static double[] sum(double[] v1, double[] v2)
-        {
-            double[] result = new double[v1.Length];
-            for (int i = 0; i < result.Length; i++)
-            {
-                result[i] = v1[i] + v2[i];
-            }
-            return result;
-        }
-
-        static double[] mul(double[][] matrix, double[] vector)
-        {
-            double[] result = new double[vector.Length];
-            for (int i = 0; i < vector.Length; i++)
-            {
-                for (int j = 0; j < vector.Length; j++)
-                {
-                    result[i] += vector[j] * matrix[i][j];
-                }
-            }
-            return result;
-        }
-
         static double[][] getMatrixForJacobiMethod(double[][] srcMatrix)
         {
             double[][] result = new double[srcMatrix.Length][];
@@ -200,6 +148,45 @@ namespace lab3
                 }
             }
             return result;
+        }
+
+        static double[] getVectorForYacobiMethod(double[][] srcMatrix, double[] srcVector)
+        {
+            double[] result = new double[srcVector.Length];
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = srcVector[i] / srcMatrix[i][i];
+            }
+            return result;
+        }
+
+        static double[] getSolutionWithIterationUsingMapping(Func<double[], double[]> mapping, int count, double epsilon)
+        {
+            double[] x_k = new double[count];
+            double[] x_k1 = mapping(x_k);
+
+            for (int i = 0; i < x_k1.Length; i++)
+            {
+                Console.Write(x_k1[i] + " ");
+            }
+            Console.WriteLine();
+
+            int n = 1;
+
+            while (distance(x_k, x_k1) > epsilon)
+            {
+                n++;
+                x_k = x_k1;
+                x_k1 = mapping(x_k);
+                for (int i = 0; i < x_k1.Length; i++)
+                {
+                    Console.Write(x_k1[i] + " ");
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("iterations " + n);
+
+            return x_k1;
         }
 
         static Func<double[], double[]> getMappingForJacobiMethod(double[][] srcMatrix, double[] srcVector)
@@ -253,12 +240,25 @@ namespace lab3
             };
         }
 
-        static double[] getVectorForYacobiMethod(double[][] srcMatrix, double[] srcVector)
+        static double[] sum(double[] v1, double[] v2)
         {
-            double[] result = new double[srcVector.Length];
+            double[] result = new double[v1.Length];
             for (int i = 0; i < result.Length; i++)
             {
-                result[i] = srcVector[i] / srcMatrix[i][i];
+                result[i] = v1[i] + v2[i];
+            }
+            return result;
+        }
+
+        static double[] mul(double[][] matrix, double[] vector)
+        {
+            double[] result = new double[vector.Length];
+            for (int i = 0; i < vector.Length; i++)
+            {
+                for (int j = 0; j < vector.Length; j++)
+                {
+                    result[i] += vector[j] * matrix[i][j];
+                }
             }
             return result;
         }
