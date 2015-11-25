@@ -29,7 +29,7 @@ namespace lab3
             double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix), getVectorForYacobiMethod(matrix, vector), 0.5e-4);
             for (int i = 0; i < solution.Length; i++)
             {
-                Console.Write(solution[i] + " ");
+                Console.WriteLine(solution[i] + " ");
             }
             Console.WriteLine();
             Console.WriteLine();
@@ -39,7 +39,7 @@ namespace lab3
             double[] solution2 = getSolutionWithIterationUsingMapping(mapping, vector.Length, 0.5e-4);
             for (int i = 0; i < solution2.Length; i++)
             {
-                Console.Write(solution2[i] + " ");
+                Console.WriteLine(solution2[i] + " ");
             }
             Console.WriteLine();
             Console.WriteLine();
@@ -49,10 +49,24 @@ namespace lab3
             double[] solution3 = getSolutionWithIterationUsingMapping(mappingZ, vector.Length, 0.5e-4);
             for (int i = 0; i < solution3.Length; i++)
             {
-                Console.Write(solution3[i] + " ");
+                Console.WriteLine(solution3[i] + " ");
             }
             Console.WriteLine();
             Console.WriteLine();
+
+            Console.WriteLine("proverka");
+            double[] resultat = mul(matrix, solution3);
+            for (int i = 0; i < resultat.Length; i++)
+            {
+                Console.WriteLine(resultat[i] + " ");
+            }
+            Console.WriteLine();
+            for (int i = 0; i < vector.Length; i++)
+            {
+                Console.WriteLine(vector[i] + " ");
+            }
+            Console.WriteLine();
+
         }
 
         static void hugeTest()
@@ -77,7 +91,7 @@ namespace lab3
             double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix), getVectorForYacobiMethod(matrix, vector), 1e-12);
             for (int i = 0; i < solution.Length; i++)
             {
-                Console.Write(solution[i] + " ");
+                Console.WriteLine(solution[i] + " ");
             }
             Console.WriteLine();
             Console.WriteLine();
@@ -87,7 +101,7 @@ namespace lab3
             double[] solution2 = getSolutionWithIterationUsingMapping(mapping, vector.Length, 1e-12);
             for (int i = 0; i < solution2.Length; i++)
             {
-                Console.Write(solution2[i] + " ");
+                Console.WriteLine(solution2[i] + " ");
             }
             Console.WriteLine();
             Console.WriteLine();
@@ -97,31 +111,50 @@ namespace lab3
             double[] solution3 = getSolutionWithIterationUsingMapping(mappingZ, vector.Length, 1e-12);
             for (int i = 0; i < solution3.Length; i++)
             {
-                Console.Write(solution3[i] + " ");
+                Console.WriteLine(solution3[i] + " ");
             }
             Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("proverka");
+            double[] resultat = mul(matrix, solution3);
+            for (int i = 0; i < resultat.Length; i++)
+            {
+                Console.WriteLine(resultat[i] + " ");
+            }
+            Console.WriteLine();
+            for (int i = 0; i < vector.Length; i++)
+            {
+                Console.WriteLine(vector[i] + " ");
+            }
             Console.WriteLine();
 
         }
 
         static double[] getSolutionWithIteration(double[][] iterationMatrix, double[] iterationVector, double epsilon)
         {
+            //к-тое приближение
             double[] x_k = new double[iterationVector.Length];
-
+            //к+1-ое приближение (сразу расчёт по формуле)
             double[] x_k1 = sum(mul(iterationMatrix, x_k), iterationVector);
-
+            //вывод к+1-ого
             for (int i = 0; i < x_k1.Length; i++)
             {
                 Console.Write(x_k1[i] + " ");
             }
             Console.WriteLine();
-
+            //счетчик итераций
             int n = 1;
-            while (distance(x_k, x_k1) > epsilon)
+            //пока разница между к-тым и к+1-вым больше эпсилон
+            while (difference(x_k, x_k1) > epsilon)
             {
                 n++;
-                x_k = x_k1;
+                //итерационный переход
+                x_k = x_k1;   
+                //рассчет следующего приближения
+                //берется сумма вектора С и вектора, получившегося в 
+                //результате умножения матрицы на вектор
                 x_k1 = sum(mul(iterationMatrix, x_k), iterationVector);
+                //вывод шага в консоль
                 for (int i = 0; i < x_k1.Length; i++)
                 {
                     Console.Write(x_k1[i] + " ");
@@ -129,6 +162,7 @@ namespace lab3
                 Console.WriteLine();
             }
             Console.WriteLine("iterations " + n);
+            Console.WriteLine();
             return x_k1;
         }
 
@@ -162,7 +196,9 @@ namespace lab3
 
         static double[] getSolutionWithIterationUsingMapping(Func<double[], double[]> mapping, int count, double epsilon)
         {
+            //к-тое приближение
             double[] x_k = new double[count];
+            //к+1-ое приближение (сразу расчёт по формуле)
             double[] x_k1 = mapping(x_k);
 
             for (int i = 0; i < x_k1.Length; i++)
@@ -172,11 +208,14 @@ namespace lab3
             Console.WriteLine();
 
             int n = 1;
-
-            while (distance(x_k, x_k1) > epsilon)
+            //пока разница между приближениями > епсилон
+            while (difference(x_k, x_k1) > epsilon)
             {
                 n++;
+                //итерационный переход
                 x_k = x_k1;
+                //применение отображения (формул метода Якоби),
+                //чтобы получить следующее приближение
                 x_k1 = mapping(x_k);
                 for (int i = 0; i < x_k1.Length; i++)
                 {
@@ -185,7 +224,7 @@ namespace lab3
                 Console.WriteLine();
             }
             Console.WriteLine("iterations " + n);
-
+            Console.WriteLine();
             return x_k1;
         }
 
@@ -193,8 +232,10 @@ namespace lab3
         {
             return x =>
             {
+                //новый вектор, который следует вернуть
                 double[] result = new double[srcVector.Length];
-                //новый вектор получаем по формуле x_i^(k+1)=(b_i-a_i1*x_1^(k)-a_i2*x_2^(k)-...-a_ij*x_j^(k)...)/a_ii  i!=j
+                //новый вектор получаем по формуле x_i^(k+1)=
+                //=(b_i-a_i1*x_1^(k)-a_i2*x_2^(k)-...-a_ij*x_j^(k)...)/a_ii  i!=j
                 for (int i = 0; i < srcVector.Length; i++)
                 {
                     for (int j = 0; j < srcVector.Length; j++)
@@ -205,6 +246,7 @@ namespace lab3
                         }
                     }
                     result[i] += srcVector[i];
+                    //деление выполняется один раз для каждой компоненты вектора x
                     result[i] /= srcMatrix[i][i];
                 }
 
@@ -217,7 +259,7 @@ namespace lab3
             return x =>
             {
                 double[] result = new double[srcVector.Length];
-                //новый вектор получаем по формуле x_i^(k+1)=(b_i-a_i1*x_1^(k+1)-a_i2*x_2^(k+1)-...-a_i(i-1)*x_(i-1)^(k+1)-a_i(i+1)*x_(i+1)^(k)-...)/a_ii 
+
                 for (int i = 0; i < srcVector.Length; i++)
                 {
                     for (int j = 0; j < srcVector.Length; j++)
@@ -263,7 +305,7 @@ namespace lab3
             return result;
         }
 
-        static double distance(double[] v1, double[] v2)
+        static double difference(double[] v1, double[] v2)
         {
             double result = 0;
             for (int i = 0; i < v1.Length; i++)
