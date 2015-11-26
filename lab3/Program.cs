@@ -26,6 +26,16 @@ namespace lab3
 
             double[] vector = { 4.88, 1.64, -2.26 };
 
+            double[] solutionGauss = getSolutionWithGaussMethod(matrix, vector);
+
+            for (int i = 0; i < solutionGauss.Length; i++)
+            {
+                Console.WriteLine(solutionGauss[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+
             double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix), getVectorForYacobiMethod(matrix, vector), 0.5e-4);
             for (int i = 0; i < solution.Length; i++)
             {
@@ -88,6 +98,17 @@ namespace lab3
 
             double[] vector = { 100000, 0.22, 30000, 6, 70, 4, 400, 8, 1, 23 };
 
+            double[] solutionGauss = getSolutionWithGaussMethod(matrix, vector);
+
+            for (int i = 0; i < solutionGauss.Length; i++)
+            {
+                Console.WriteLine(solutionGauss[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+
+
             double[] solution = getSolutionWithIteration(getMatrixForJacobiMethod(matrix), getVectorForYacobiMethod(matrix, vector), 1e-12);
             for (int i = 0; i < solution.Length; i++)
             {
@@ -149,7 +170,7 @@ namespace lab3
             {
                 n++;
                 //итерационный переход
-                x_k = x_k1;   
+                x_k = x_k1;
                 //рассчет следующего приближения
                 //берется сумма вектора С и вектора, получившегося в 
                 //результате умножения матрицы на вектор
@@ -313,6 +334,161 @@ namespace lab3
                 result += Math.Abs(v1[i] - v2[i]);
             }
             return result;
+        }
+
+        class Matrix
+        {
+            public class Row
+            {
+                Matrix m;
+                public int i;
+                public Row(Matrix m, int i)
+                {
+                    this.m = m;
+                    this.i = i;
+                }
+
+                public double this[int j]
+                {
+                    get
+                    {
+                        if (i == 0)
+                        {
+                            return m.row[j];
+                        }
+                        if (j == 0)
+                        {
+                            return m.column[i - 1];
+                        }
+                        return m.minor[i - 1][j - 1];
+                    }
+                    set
+                    {
+                        if (i == 0)
+                        {
+                            m.row[j] = value;
+                            return;
+                        }
+                        if (j == 0)
+                        {
+                            m.column[i - 1] = value;
+                            return;
+                        }
+                        m.minor[i - 1][j - 1] = value;
+                    }
+                }
+            }
+
+            public int count;
+            public Matrix minor;
+            double[] row;
+            double[] column;
+            Row rowForIndexing;
+
+            private Matrix(double[][] src, double[] vector, int count)
+            {
+                this.count = count;
+                if (count == 1)
+                {
+                    this.minor = null;
+                    row = new double[] { src[src.Length - 1][src.Length - 1], vector[vector.Length - 1] };
+                    return;
+                }
+                row = new double[count + 1];
+                for (int i = 0; i < count; i++)
+                {
+                    row[i] = src[src.Length - count][src.Length - count + i];
+                }
+                row[count] = vector[vector.Length - count];
+                column = new double[count - 1];
+                for (int j = 1; j < count; j++)
+                {
+                    column[j - 1] = src[src.Length - count + j][src.Length - count];
+                }
+                minor = new Matrix(src, vector, count - 1);
+            }
+
+            public static Matrix convertFrom(double[][] src, double[] vector)
+            {
+                return new Matrix(src, vector, src.Length);
+            }
+
+            public Row this[int i]
+            {
+                get
+                {
+                    if (rowForIndexing == null)
+                    {
+                        rowForIndexing = new Row(this, i);
+                    }
+                    rowForIndexing.i = i;
+                    return rowForIndexing;
+                }
+            }
+        }
+
+        static void changeMatrixForGaussMethod(Matrix matrix)
+        {
+            if (matrix.count == 1)
+            {
+                matrix[0][1] /= matrix[0][0];
+                return;
+            }
+            for(int j = 1; j <= matrix.count; j++)
+            {
+                matrix[0][j] /= matrix[0][0];
+                for(int i = 1; i < matrix.count; i++)
+                {
+                    matrix[i][j] -= matrix[0][j] * matrix[i][0];
+                }
+            }
+            changeMatrixForGaussMethod(matrix.minor);
+        }
+
+        static double[] getSolutionWithGaussMethod(double[][] srcMatrix, double[] srcVector)
+        {
+            Matrix m = Matrix.convertFrom(srcMatrix, srcVector);
+            changeMatrixForGaussMethod(m);
+            double[] result = new double[srcVector.Length];
+            for(int i = srcVector.Length - 1; i >= 0; i--)
+            {
+                result[i] = m[i][m.count];
+                for(int j = i + 1; j < m.count; j++)
+                {
+                    result[i] -= result[j] * m[i][j];
+                }
+            }
+            return result;
+        }
+
+        static void changeMatrixForModyfiedGaussMethod(Matrix matrix, int[] rowOrder, int[] columnOrder)
+        {
+            if (matrix.count == 1)
+            {
+                matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length-1-matrix.count +1 ]] /= matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + 0]];
+                return;
+            }
+            double max = 0;
+            int rowMax = -1;
+            int columnMax = -1;
+
+            for(int i = 0; i < matrix.count; i++)
+            {
+                for(int j = 0; j < matrix.count; j++)
+                {
+                    double check=Math.Abs()
+                }
+            }
+
+            for (int j = 1; j <= matrix.count; j++)
+            {
+                matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + j]] /= matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + 0]];
+                for (int i = 1; i < matrix.count; i++)
+                {
+                    matrix[rowOrder[rowOrder.Length - 1 - matrix.count + i]][columnOrder[columnOrder.Length - 1 - matrix.count + j]] -= matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + j]] * matrix[rowOrder[rowOrder.Length - 1 - matrix.count + i]][columnOrder[columnOrder.Length - 1 - matrix.count + 0]];
+                }
+            }
+            changeMatrixForModyfiedGaussMethod(matrix.minor, rowOrder, columnOrder);
         }
     }
 }
