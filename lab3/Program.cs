@@ -19,12 +19,12 @@ namespace lab3
         static void taskForTeacher()
         {
             double[][] matrix = {
-                new double[]{ 1.56, -0.14, 1.2 },
                 new double[]{ -0.6, 0.94, 0.12 },
+                new double[]{ 1.56, -0.14, 1.2 },
                 new double[]{ -0.24, -0.26, -0.5 },
             };
 
-            double[] vector = { 4.88, 1.64, -2.26 };
+            double[] vector = { 1.64, 4.88, -2.26 };
 
             double[] solutionGauss = getSolutionWithGaussMethod(matrix, vector);
 
@@ -33,6 +33,16 @@ namespace lab3
                 Console.WriteLine(solutionGauss[i] + " ");
             }
             Console.WriteLine();
+
+            double[] solutionGauss2 = getSolutionWithModyfiedGaussMethod(matrix, vector);
+
+            for (int i = 0; i < solutionGauss2.Length; i++)
+            {
+                Console.WriteLine(solutionGauss2[i] + " ");
+            }
+            Console.WriteLine();
+
+
             Console.WriteLine();
 
 
@@ -103,6 +113,15 @@ namespace lab3
             for (int i = 0; i < solutionGauss.Length; i++)
             {
                 Console.WriteLine(solutionGauss[i] + " ");
+            }
+            Console.WriteLine();
+            Console.WriteLine();
+
+            double[] solutionGauss2 = getSolutionWithModyfiedGaussMethod(matrix, vector);
+
+            for (int i = 0; i < solutionGauss2.Length; i++)
+            {
+                Console.WriteLine(solutionGauss2[i] + " ");
             }
             Console.WriteLine();
             Console.WriteLine();
@@ -382,8 +401,7 @@ namespace lab3
             public int count;
             public Matrix minor;
             double[] row;
-            double[] column;
-            Row rowForIndexing;
+            double[] column;    
 
             private Matrix(double[][] src, double[] vector, int count)
             {
@@ -417,14 +435,33 @@ namespace lab3
             {
                 get
                 {
-                    if (rowForIndexing == null)
-                    {
-                        rowForIndexing = new Row(this, i);
-                    }
-                    rowForIndexing.i = i;
-                    return rowForIndexing;
+                    return new Row(this, i); 
                 }
             }
+
+            public void exchangeRows(int i,int j)
+            {
+                
+                for (int k = 0; k < count + 1; k++)
+                {
+                    double cash = this[i][k];
+                    this[i][k] = this[j][k];
+                    this[j][k] = cash;
+                }
+                 
+            }
+
+            public void exchangeColumns(int i, int j)
+            {
+                for (int k = 0; k < count; k++)
+                {
+                    double cash = this[k][i];
+                    this[k][i] = this[k][j];
+                    this[k][j] = cash;
+                }
+            }
+
+
         }
 
         static void changeMatrixForGaussMethod(Matrix matrix)
@@ -461,14 +498,14 @@ namespace lab3
             return result;
         }
 
-        static void changeMatrixForModyfiedGaussMethod(Matrix matrix, int[] rowOrder, int[] columnOrder)
+        static void changeMatrixForModyfiedGaussMethod(Matrix matrix, int[] columnOrder, Matrix main)
         {
             if (matrix.count == 1)
             {
-                matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length-1-matrix.count +1 ]] /= matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + 0]];
+                matrix[0][1] /= matrix[0][0];
                 return;
             }
-            double max = 0;
+            double max = double.MinValue;
             int rowMax = -1;
             int columnMax = -1;
 
@@ -476,19 +513,60 @@ namespace lab3
             {
                 for(int j = 0; j < matrix.count; j++)
                 {
-                    double check=Math.Abs()
+                    double check = Math.Abs(matrix[i][j]);
+                    if (check > max)
+                    {
+                        rowMax = i;
+                        columnMax = j;
+                        max = check;
+                    }
                 }
             }
+            
+            int iRow= columnOrder.Length - (matrix.count - rowMax);
+            int jRow = columnOrder.Length - matrix.count;   
+            main.exchangeRows(iRow, jRow);
+
+            int iColumn = columnOrder.Length - (matrix.count - columnMax);
+            int jColumn = columnOrder.Length - matrix.count;
+            main.exchangeColumns(iColumn, jColumn);
+
+            int cash_index = columnOrder[iColumn];
+            columnOrder[iColumn]=columnOrder[jColumn];
+            columnOrder[jColumn] = cash_index;
 
             for (int j = 1; j <= matrix.count; j++)
             {
-                matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + j]] /= matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + 0]];
+                matrix[0][j] /= matrix[0][0];
                 for (int i = 1; i < matrix.count; i++)
                 {
-                    matrix[rowOrder[rowOrder.Length - 1 - matrix.count + i]][columnOrder[columnOrder.Length - 1 - matrix.count + j]] -= matrix[rowOrder[rowOrder.Length - 1 - matrix.count + 0]][columnOrder[columnOrder.Length - 1 - matrix.count + j]] * matrix[rowOrder[rowOrder.Length - 1 - matrix.count + i]][columnOrder[columnOrder.Length - 1 - matrix.count + 0]];
+                    matrix[i][j] -= matrix[0][j] * matrix[i][0];
                 }
             }
-            changeMatrixForModyfiedGaussMethod(matrix.minor, rowOrder, columnOrder);
+
+            changeMatrixForModyfiedGaussMethod(matrix.minor, columnOrder, main);
+        }
+
+        static double[] getSolutionWithModyfiedGaussMethod(double[][] srcMatrix, double[] srcVector)
+        {
+            Matrix m = Matrix.convertFrom(srcMatrix, srcVector);
+            int[] columnOrder = new int[srcVector.Length];
+            for(int i = 0; i < columnOrder.Length; i++)
+            {
+                columnOrder[i] = i;
+            }
+            changeMatrixForModyfiedGaussMethod(m, columnOrder,m);
+            double[] result = new double[srcVector.Length];
+            for (int i = srcVector.Length - 1; i >= 0; i--)
+            {
+                result[columnOrder[i]] = m[i][m.count];
+                for (int j = i + 1; j < m.count; j++)
+                {
+                    result[columnOrder[i]] -= result[columnOrder[j]] * m[i][j];
+                }
+            }
+            
+            return result;
         }
     }
 }
