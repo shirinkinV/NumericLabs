@@ -12,15 +12,15 @@ namespace lab3
         static void Main(string[] args)
         {
             taskForTeacher();
-            hugeTest();
+            //hugeTest();
             Console.Read();
         }
 
         static void taskForTeacher()
         {
             double[][] matrix = {
-                new double[]{ -0.6, 0.94, 0.12 },
-                new double[]{ 1.56, -0.14, 1.2 },
+                new double[]{ 1.56, -0.14, 1.2  },
+                new double[]{  - 0.6, 0.94, 0.12},
                 new double[]{ -0.24, -0.26, -0.5 },
             };
 
