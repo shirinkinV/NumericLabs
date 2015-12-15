@@ -24,7 +24,7 @@ namespace lab3
                 new double[]{ -0.24, -0.26, -0.5 },
             };
 
-            double[] vector = { 1.64, 4.88, -2.26 };
+            double[] vector = { 1.64, -2.26, 4.88 };
 
             double[] solutionGauss = getSolutionWithGaussMethod(matrix, vector);
 
