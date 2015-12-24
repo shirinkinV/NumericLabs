@@ -13,13 +13,13 @@ namespace lab2
         {
             //определение функции фи
             //из теоретических выводов
-            Func<double, double> phi = x => 0.5 /
-                Math.Sqrt(21) * Math.Log(22 - x * x);
+            double lambda = (-2  / (Math.Exp(Math.Sqrt(8)) +2*Math.Sqrt(8)))/2;
+            Func<double, double> phi = x => x+lambda*(Math.Exp(x)-22+x* x);
             Func<double, double> function = x => Math.Exp(x)
                 - 22 + x * x;
             //получение корня
             double root = getRoot(
-                phi, function, 0.5e-4, 2);
+                phi, function, 0.5e-4, Math.Sqrt(5));
             Console.WriteLine("This is root: " + root);
         }
 

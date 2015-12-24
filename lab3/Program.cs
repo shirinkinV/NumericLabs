@@ -175,7 +175,7 @@ namespace lab3
             //к-тое приближение
             double[] x_k = new double[iterationVector.Length];
             //к+1-ое приближение (сразу расчёт по формуле)
-            double[] x_k1 = sum(mul(iterationMatrix, x_k), iterationVector);
+            double[] x_k1 = sum(mul(iterationMatrix, x_k), x_k);
             //вывод к+1-ого
             for (int i = 0; i < x_k1.Length; i++)
             {
