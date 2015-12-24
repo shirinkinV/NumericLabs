@@ -9,10 +9,12 @@ namespace lab1
     {
         static void Main(string[] args)
         {
-            double sum1 = 0.4 * 4.0490478732 + 0.4 * computeSum(
+            double sum0 = computeSum(n => 0.4 * (n + 1) / (n * n * n - 0.4),8000000);
+            double sum3 = 0.4* computeSum(
                 n => ((n + 1) * n * n * n - (n + 2) * (n * n * n - 0.4)) / ((n * n * n - 0.4) * n * n * n)
-                , 2900);                                                            
-            Console.WriteLine(sum1);
+                , 2900);
+            double sum1 = 0.4 * 4.0490478732 + sum3;                                                      
+            Console.WriteLine(""+sum0+" "+sum1);
             Console.Read();
         }
 
