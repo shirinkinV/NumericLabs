@@ -9,7 +9,7 @@ namespace lab1
     {
         static void Main(string[] args)
         {
-            double sum0 = computeSum(n => 0.4 * (n + 1) / (n * n * n - 0.4),8000000);
+            double sum0 = computeSum(n => 0.4 * (n + 1) / (n * n * n - 0.4), 8000000);
             double sum3 = 0.4* computeSum(
                 n => ((n + 1) * n * n * n - (n + 2) * (n * n * n - 0.4)) / ((n * n * n - 0.4) * n * n * n)
                 , 2900);
