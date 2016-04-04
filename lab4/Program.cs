@@ -13,13 +13,13 @@ namespace lab4
             Func<double, double> function = x => Math.Cos(x + Math.Pow(x, 2));  //наша функция
             double h = 0.1;//шаг
             double res = SimpsonRule(function, h, 2, 3);//интеграл, посчитанный правилом Симпсона (составная формула)
-            double error = (res - SimpsonRule(function, h * 2, 2, 3)) / 15;//погрешность для формулы Симпсона
+            double error = (res - SimpsonRule(function, h * 2, 2, 3)) / 15;//погрешность по Рунге
             Console.WriteLine("h     = " + h);
             Console.WriteLine("value = " + res);
             Console.WriteLine("error = " + error);
             Console.WriteLine();
 
-            while (Math.Abs(error) > 1e-14)//делаем то, что выше в цикле с делением шага на 2
+            while (Math.Abs(error) > 1e-8)//делаем то, что выше в цикле с делением шага на 2
             {
                 h /= 2;
                 res = SimpsonRule(function, h, 2, 3);
@@ -30,6 +30,27 @@ namespace lab4
                 Console.WriteLine();
             }
             Console.WriteLine("done");
+
+            h = 0.1;//шаг
+            res = GregoryFormula(function, h, 2, 3);//интеграл, посчитанный правилом Грегори (составная формула)
+            error = (res - GregoryFormula(function, h * 2, 2, 3)) / 15;//погрешность по Рунге
+            Console.WriteLine("h     = " + h);
+            Console.WriteLine("value = " + res);
+            Console.WriteLine("error = " + error);
+            Console.WriteLine();
+
+            while (Math.Abs(error) > 1e-4)//делаем то, что выше в цикле с делением шага на 2
+            {
+                h /= 2;
+                res = GregoryFormula(function, h, 2, 3);
+                error = (res - GregoryFormula(function, h * 2, 2, 3)) / 15;
+                Console.WriteLine("h     = " + h);
+                Console.WriteLine("value = " + res);
+                Console.WriteLine("error = " + error);
+                Console.WriteLine();
+            }
+            Console.WriteLine("done");
+
             Console.Read();
         }
 
