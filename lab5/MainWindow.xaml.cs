@@ -23,18 +23,18 @@ namespace lab5
         public MainWindow()
         {
             InitializeComponent();
-            colors[0] = 0x909090;
-            colors[1] = 0x099090; 
-            colors[2] = 0x099009;
-            colors[3] = 0x999000;
-            colors[4] = 0x065090;
-            colors[5] = 0x099090;
-            colors[6] = 0x099054;
-            colors[7] = 0x099090;
-            colors[8] = 0x09c390;
-            colors[9] = 0x909090;
-            colors[10] = 0x099090;
-            colors[11] = 0x099090;
+            colors[0] = 0x2828E6;
+            colors[1] = 0x29BAE4; 
+            colors[2] = 0x29E6BA;
+            colors[3] = 0x29E629;
+            colors[4] = 0xBAE629;
+            colors[5] = 0xE6BA29;
+            colors[6] = 0xE629BA;
+            colors[7] = 0xBA29E6;
+            colors[8] = 0x292929;
+            colors[9] = 0xBABABA;
+            colors[10] = 0xE6E6E6;
+            colors[11] = 0xff00ff;
             
         }
 
@@ -57,6 +57,23 @@ namespace lab5
             }
         }
 
+        class AccelNames : ObservableCollection<string>
+        {
+            public AccelNames()         //названия методов для списка, порядок сохраняется
+            {
+                Add("Эйлера явн.");
+                Add("Эйлера с пересч.");
+                Add("Коши");
+                Add("РК 4");
+                Add("Эйлера неявн.");
+                Add("Тейлора 2");
+                Add("Тейлора 3");
+                Add("Тейлора 4");
+                Add("Трапеций");
+            }
+        }
+
+
         private void comboBox_Loaded(object sender, RoutedEventArgs e)
         {
             ((ComboBox)sender).ItemsSource = new MethodsNames();
@@ -77,32 +94,81 @@ namespace lab5
             FunctionsAndParsing.CommonFunction fObj = FunctionsAndParsing.Parser.ParseExpressionObject(fT.Text, new string[] { "x", "y" });
             Func<double, double, double> f = (x, y) => fObj.getCommonFunction()(new double[] { x, y });
             List<ValueAndArgument> net = null;
-            Func<double, ValueAndArgument, Func<double, double, double>, ValueAndArgument> methodDelegate = null;
+            Func<double, ValueAndArgument, Func<double, double, double>, ValueAndArgument> methodOneStepDelegate = null;
+            Func<double, List<ValueAndArgument>, Func<double, double, double>, ValueAndArgument> methodMoreStepsDelegate = null;
+
             switch (selected) //выбор метода по его индексу
             {
                 case 0:
-                    methodDelegate = Methods.EulerExplicit.nextStep;
+                    methodOneStepDelegate = Methods.EulerExplicit.nextStep;
                     break;
                 case 1:
-                    methodDelegate = Methods.EulerWithRecalculation.nextStep;
+                    methodOneStepDelegate = Methods.EulerWithRecalculation.nextStep;
                     break;
-                case 2:
-                    //TODO здесь и далее необходимо добавить ссылки на другие методы таким же образом, как и в двух предыдущих случаях
+                case 3:
+                    methodOneStepDelegate = Methods.RK4.nextStep;
                     break;
+                case 11:
+                    methodMoreStepsDelegate = Methods.Simpson.nextStep;
+                    break;
+                    //TODO здесь необходимо добавить ссылки на другие методы таким же образом, как и в двух предыдущих случаях
+
             }
 
-            if (methodDelegate != null)
+            if (methodOneStepDelegate != null)
             {
                 DateTime t1 = DateTime.Now;
-                net = KoshiTask.integrateDifferencialEquation(h, x0, x0 + 1, y0, f, methodDelegate);
+                net = KoshiTask.integrateDifferencialEquation(h, x0, x0 + 1, y0, f, methodOneStepDelegate);
                 DateTime t2 = DateTime.Now;
                 double dt=(t2 - t1).TotalMilliseconds;
                 time.Content = "" + dt;
-                Plot.addFunction(new PlotView.FunctionAppearance(Interpolate.interpolate(net), colors[selected], x0, x0 + 1, 2, 0xff00), "прибл., метод "+(selected+1));
-                
+                Plot.addFunction(new PlotView.FunctionAppearance(Interpolate.interpolate(net), colors[selected], x0, x0 + 1, 2, 0xff00), "прибл., метод "+(selected+1));             
+            }
+            if (methodMoreStepsDelegate != null)
+            {
+                methodOneStepDelegate = selectAccel();
+                if (methodOneStepDelegate == null)
+                {
+                    methodOneStepDelegate = Methods.EulerExplicit.nextStep;
+                }
+                DateTime t1 = DateTime.Now;
+                net = KoshiTask.integrateDifferencialEquation(2, h, x0, x0 + 1, y0, f, methodMoreStepsDelegate, methodOneStepDelegate);
+                DateTime t2 = DateTime.Now;
+                double dt = (t2 - t1).TotalMilliseconds;
+                time.Content = "" + dt;
+                Plot.addFunction(new PlotView.FunctionAppearance(Interpolate.interpolate(net), colors[selected], x0, x0 + 1, 2, 0xff00), "прибл., метод " + (selected + 1));
             }
             table.ItemsSource = net;
             net = null;
+        }
+
+        private Func<double, ValueAndArgument, Func<double, double, double>, ValueAndArgument> selectAccel()
+        {
+            switch (accelBox.SelectedIndex)
+            {
+                case 0:return Methods.EulerExplicit.nextStep;
+                case 1:return Methods.EulerWithRecalculation.nextStep;
+                case 3: return Methods.RK4.nextStep;     
+                    //TODO
+                default:return null;
+            }
+        }
+
+        private void accelBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            ((ComboBox)sender).ItemsSource = new AccelNames();
+        }
+
+        private void method_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (((ComboBox)sender).SelectedIndex >= 9)
+            {
+                accelBox.IsEnabled = true;
+            }
+            else
+            {
+                accelBox.IsEnabled = false;
+            }
         }
     }
 }
