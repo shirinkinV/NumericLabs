@@ -105,6 +105,9 @@ namespace lab5
                 case 1:
                     methodOneStepDelegate = Methods.EulerWithRecalculation.nextStep;
                     break;
+                case 2:
+                    methodOneStepDelegate = Methods.Koshi.nextStep;
+                    break;
                 case 3:
                     methodOneStepDelegate = Methods.RK4.nextStep;
                     break;
@@ -146,9 +149,11 @@ namespace lab5
         {
             switch (accelBox.SelectedIndex)
             {
-                case 0:return Methods.EulerExplicit.nextStep;
-                case 1:return Methods.EulerWithRecalculation.nextStep;
-                case 3: return Methods.RK4.nextStep;     
+                case 0: return Methods.EulerExplicit.nextStep;
+                case 1: return Methods.EulerWithRecalculation.nextStep;
+                case 2: return Methods.Koshi.nextStep;
+                case 3: return Methods.RK4.nextStep;    
+                     
                     //TODO
                 default:return null;
             }

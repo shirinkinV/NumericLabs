@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="Methods\EulerExplicit.cs" />
     <Compile Include="Methods\EulerWithRecalculation.cs" />
+    <Compile Include="Methods\Koshi.cs" />
     <Compile Include="Methods\RK4.cs" />
     <Compile Include="Methods\Simpson.cs" />
     <Compile Include="ValueAndArgument.cs" />
