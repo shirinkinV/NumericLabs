@@ -60,5 +60,36 @@ namespace lab5
 
             return result; 
         }
+
+        /// <summary>
+        /// Многошаговые методы для вектор-функции
+        /// </summary>
+        /// <param name="steps">количество шагов в методе</param>
+        /// <param name="h">шаг</param>
+        /// <param name="x0">левая граница</param>
+        /// <param name="xn">правая граница</param>
+        /// <param name="y0">начальное условие в левой границе</param>
+        /// <param name="f">производная искомой функции f(x,y)</param>
+        /// <param name="method">метод интегрирования</param>
+        /// <param name="accel">одношаговый метод разгона</param>
+        /// <returns>сетку значений</returns>
+        public static List<ValueAndArgumentVector> integrateDifferencialEquation(int steps, double h, double x0, double xn, double[] y0, Func<double, double, double> f, Func<double, List<ValueAndArgumentVector>, Func<double, double, double>, ValueAndArgumentVector> method, Func<double, ValueAndArgumentVector, Func<double, double, double>, ValueAndArgumentVector> accel)
+        {
+            List<ValueAndArgumentVector> result = new List<ValueAndArgumentVector>();
+            result.Add(new ValueAndArgumentVector() { N = 1, x = x0, y = y0 });
+            for (int i = 1; i < steps; i++)
+            {
+                result.Add(accel(h, result.Last(), f));
+            }
+            //разогнались
+
+            while (result.Last().x <= xn)
+            {
+                result.Add(method(h, result, f));
+            }
+
+            return result;
+        }
+
     }
 }
