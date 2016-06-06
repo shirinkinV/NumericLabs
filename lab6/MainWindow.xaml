@@ -1,4 +1,4 @@
-﻿<Window x:Class="lab6.MainWindow"
+﻿<Window xmlns:PlotView="clr-namespace:PlotView;assembly=PlotView"  x:Class="lab6.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,6 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        <Button x:Name="button" Content="Button" Margin="0,0,10,10" HorizontalAlignment="Right" Width="76" Height="20" VerticalAlignment="Bottom" Click="button_Click"/>
+        <PlotView:PlotView x:Name="plot"/>
+
+        <Button x:Name="button" Content="Отобразить" Margin="19,0,0,13" Height="20" VerticalAlignment="Bottom" Click="button_Click" HorizontalAlignment="Left" Width="76"/>
+        <TextBox x:Name="countOfPoints" HorizontalAlignment="Left" Height="23" Margin="19,0,0,38" TextWrapping="Wrap" Text="1000" VerticalAlignment="Bottom" Width="76"/>
     </Grid>
 </Window>
