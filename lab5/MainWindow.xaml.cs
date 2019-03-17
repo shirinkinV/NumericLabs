@@ -12,6 +12,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
+using Symbolic.Functions;
+using Symbolic;
+using GraphicsPlot;
 
 namespace lab5
 {
@@ -84,15 +87,15 @@ namespace lab5
         private void button_Click(object sender, RoutedEventArgs e)
         {
             double x0 = Double.Parse(begin.Text);
-            FunctionsAndParsing.CommonFunction resolObj = FunctionsAndParsing.Parser.ParseExpressionObject(resolution.Text, new string[] { "x" });
-            Func<double, double> resol = x => resolObj.getCommonFunction()(new double[] { x });
+            CommonF solveObj = Parser.ParseExpressionObject(solve.Text, new string[] { "x" });
+            Func<double, double> resol = x => solveObj.Invoke(new double[] { x });
             if(Plot.graphics.functions.Count==0)
-            Plot.addFunction(new PlotView.FunctionAppearance(resol, 0x000000, x0, x0 + 1, 2, 0x00ff), "точн.");
+            Plot.addFunction(new FunctionAppearance(resol, 0x000000, x0, x0 + 1, 2, 0x00ff), "точн.");
             int selected = method.SelectedIndex;    //индекс выбранного метода из выпадающего списка
             double h = Double.Parse(step.Text);
             double y0 = Double.Parse(beginValue.Text);
-            FunctionsAndParsing.CommonFunction fObj = FunctionsAndParsing.Parser.ParseExpressionObject(fT.Text, new string[] { "x", "y" });
-            Func<double, double, double> f = (x, y) => fObj.getCommonFunction()(new double[] { x, y });
+            CommonF fObj = Parser.ParseExpressionObject(fT.Text, new string[] { "x", "y" });
+            Func<double, double, double> f = (x, y) => fObj.Invoke(new double[] { x, y });
             List<ValueAndArgument> net = null;
             Func<double, ValueAndArgument, Func<double, double, double>, ValueAndArgument> methodOneStepDelegate = null;
             Func<double, List<ValueAndArgument>, Func<double, double, double>, ValueAndArgument> methodMoreStepsDelegate = null;
@@ -125,7 +128,7 @@ namespace lab5
                 DateTime t2 = DateTime.Now;
                 double dt=(t2 - t1).TotalMilliseconds;
                 time.Content = "" + dt;
-                Plot.addFunction(new PlotView.FunctionAppearance(Interpolate.interpolate(net), colors[selected], x0, x0 + 1, 2, 0xff00), "прибл., метод "+(selected+1));             
+                Plot.addFunction(new FunctionAppearance(Interpolate.interpolate(net), colors[selected], x0, x0 + 1, 2, 0xff00), "прибл., метод "+(selected+1));             
             }
             if (methodMoreStepsDelegate != null)
             {
@@ -139,7 +142,7 @@ namespace lab5
                 DateTime t2 = DateTime.Now;
                 double dt = (t2 - t1).TotalMilliseconds;
                 time.Content = "" + dt;
-                Plot.addFunction(new PlotView.FunctionAppearance(Interpolate.interpolate(net), colors[selected], x0, x0 + 1, 2, 0xff00), "прибл., метод " + (selected + 1));
+                Plot.addFunction(new FunctionAppearance(Interpolate.interpolate(net), colors[selected], x0, x0 + 1, 2, 0xff00), "прибл., метод " + (selected + 1));
             }
             table.ItemsSource = net;
             net = null;

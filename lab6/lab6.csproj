@@ -34,36 +34,35 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Apex">
-      <HintPath>..\..\main\Main\PlotView\bin\Release\Apex.dll</HintPath>
+    <Reference Include="Apex, Version=1.2.1.0, Culture=neutral, PublicKeyToken=98d06957926c086d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lab5\binaries\Apex.dll</HintPath>
     </Reference>
-    <Reference Include="FunctionsAndParsing">
-      <HintPath>..\..\main\Main\FunctionsAndParsing\bin\Release\FunctionsAndParsing.dll</HintPath>
+    <Reference Include="GraphicsPlot, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lab5\binaries\GraphicsPlot.dll</HintPath>
     </Reference>
-    <Reference Include="MathNet.Numerics">
-      <HintPath>..\..\mathnet-symbolics\out\lib\Net40\MathNet.Numerics.dll</HintPath>
+    <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lab5\binaries\MathNet.Numerics.dll</HintPath>
     </Reference>
-    <Reference Include="PlotView">
-      <HintPath>..\..\main\Main\PlotView\bin\Release\PlotView.dll</HintPath>
+    <Reference Include="SharpGL, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lab5\binaries\SharpGL.dll</HintPath>
     </Reference>
-    <Reference Include="SharpGL">
-      <HintPath>..\..\main\Main\PlotView\bin\Release\SharpGL.dll</HintPath>
+    <Reference Include="SharpGL.SceneGraph, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lab5\binaries\SharpGL.SceneGraph.dll</HintPath>
     </Reference>
-    <Reference Include="SharpGL.SceneGraph">
-      <HintPath>..\..\main\Main\PlotView\bin\Release\SharpGL.SceneGraph.dll</HintPath>
+    <Reference Include="SharpGL.WPF, Version=2.4.0.0, Culture=neutral, PublicKeyToken=27fc851303210b27, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lab5\binaries\SharpGL.WPF.dll</HintPath>
     </Reference>
-    <Reference Include="SharpGL.WPF">
-      <HintPath>..\..\main\Main\PlotView\bin\Release\SharpGL.WPF.dll</HintPath>
-    </Reference>
-    <Reference Include="Sketch">
-      <HintPath>..\..\main\Main\PlotView\bin\Release\Sketch.dll</HintPath>
+    <Reference Include="Symbolic">
+      <HintPath>..\lab5\binaries\Symbolic.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\main\Main\PlotView\bin\Release\System.Net.Http.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />

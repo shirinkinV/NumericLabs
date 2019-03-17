@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab5"
-        xmlns:plot="clr-namespace:PlotView;assembly=PlotView"
+        xmlns:plot="clr-namespace:GraphicsPlot;assembly=GraphicsPlot"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800" MinWidth="800" MinHeight="600" MaxWidth="800" MaxHeight="600" ResizeMode="CanMinimize">
     <Grid>
@@ -28,7 +28,7 @@
         <TextBox x:Name="step" HorizontalAlignment="Left" Height="23" Margin="34,419,0,0" TextWrapping="Wrap" Text="0,1" VerticalAlignment="Top" Width="161"/>
         <Button x:Name="button" Content="Показать результат" Margin="10,509,0,10" HorizontalAlignment="Left" Width="185" Click="button_Click"/>
         <Label x:Name="label5" Content="точн. реш.:" HorizontalAlignment="Left" Margin="10,447,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="resolution" HorizontalAlignment="Left" Height="23" Margin="85,451,0,0" TextWrapping="Wrap" Text="1/4*(sqrt(x)+1)^2" VerticalAlignment="Top" Width="110"/>
+        <TextBox x:Name="solve" HorizontalAlignment="Left" Height="23" Margin="85,451,0,0" TextWrapping="Wrap" Text="1/4*(sqrt(x)+1)^2" VerticalAlignment="Top" Width="110"/>
         <Label x:Name="label6" Content="Время расчёта (мс):" HorizontalAlignment="Left" Margin="10,478,0,0" VerticalAlignment="Top"/>
         <Label x:Name="time" Content="0" HorizontalAlignment="Left" Margin="133,478,0,0" VerticalAlignment="Top" Width="62"/>
         <Label x:Name="label7" Content="Разгон:" HorizontalAlignment="Left" Margin="10,353,0,0" VerticalAlignment="Top"/>
